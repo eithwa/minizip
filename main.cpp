@@ -31,6 +31,5 @@ int main(int argc, char *argv[])
 	default:
 		break;
 	}
-	system("pause");
 	return 0;
 }
