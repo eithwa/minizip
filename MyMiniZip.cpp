@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <dbghelp.h>
 #include <shlwapi.h>
+#include <iostream>
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"dbghelp.lib")
 #if _DEBUG 
@@ -20,12 +21,25 @@ MyCTime::~MyCTime()
 
 Time MyCTime::start() const
 {
-	return std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point systemTimePoint = std::chrono::system_clock::now();
+
+	auto durationSinceEpoch = systemTimePoint.time_since_epoch();
+	auto durationInSteadyClock = std::chrono::duration_cast<std::chrono::steady_clock::duration>(durationSinceEpoch);
+
+	Time steadyTimePoint = Time(durationInSteadyClock);
+	return steadyTimePoint;
 }
 
 Time MyCTime::end() const
 {
-	return std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point systemTimePoint = std::chrono::system_clock::now();
+
+	auto durationSinceEpoch = systemTimePoint.time_since_epoch();
+	auto durationInSteadyClock = std::chrono::duration_cast<std::chrono::steady_clock::duration>(durationSinceEpoch);
+
+
+	Time steadyTimePoint = Time(durationInSteadyClock);
+	return steadyTimePoint;
 }
 
 int MyCTime::CountInterval(Time& begin, Time& end)
@@ -64,7 +78,7 @@ std::string MyMiniZip::GetGlobalComment() const
 
 bool MyMiniZip::addFileZip(zipFile ZipFile, const std::string strFileInZipName, const std::string strPath)
 {
-	//³õÊ¼»¯Ğ´ÈëzipµÄÎÄ¼şĞÅÏ¢  
+	//åˆå§‹åŒ–å†™å…¥zipçš„æ–‡ä»¶ä¿¡æ¯  
 	bool bResult = false;
 	zip_fileinfo zi;
 	ZeroMemory(&zi, sizeof(zip_fileinfo));
@@ -72,7 +86,7 @@ bool MyMiniZip::addFileZip(zipFile ZipFile, const std::string strFileInZipName, 
 	std::string strReadFile;
 	if (strPath.empty())
 		strFIlename += "/";
-	//ÔÚzipÎÄ¼şÖĞ´´½¨ĞÂÎÄ¼ş  
+	//åœ¨zipæ–‡ä»¶ä¸­åˆ›å»ºæ–°æ–‡ä»¶  
 	zipOpenNewFileInZip(ZipFile, strFIlename.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 	if (!strPath.empty())
 	{
@@ -137,12 +151,11 @@ bool MyMiniZip::packFolderToZip(zipFile ZipFile, const std::string strFileInZipN
 			ZeroMemory(szTmpFolderPath, MAX_PATH);
 			if (strPath.empty())
 			{
-				sprintf_s(szTmpFolderPath, "%s", file_dta.cFileName);		//Èç¹ûÄ¿Â¼ÊÇ¿ÕµÄ»°¾ÍÌí¼Óµ½¸ùÄ¿Â¼
+				sprintf_s(szTmpFolderPath, "%s", file_dta.cFileName);
 			}
 			else
 			{
-
-				sprintf_s(szTmpFolderPath, "%s/%s", strPath.c_str(), file_dta.cFileName);	//Èç¹û Ä¿Â¼²»ÊÇ¿ÕÌí¼Óµ½µ±Ç°Ä¿Â¼
+				sprintf_s(szTmpFolderPath, "%s/%s", strPath.c_str(), file_dta.cFileName);
 			}
 			addFileZip(ZipFile, szTmpFolderPath, "");
 			packFolderToZip(ZipFile, szFullFilePath, szTmpFolderPath);
@@ -151,7 +164,9 @@ bool MyMiniZip::packFolderToZip(zipFile ZipFile, const std::string strFileInZipN
 		else
 		{
 			if (strPath.empty())
+			{
 				addFileZip(ZipFile, file_dta.cFileName, szFullFilePath);
+			}
 			else
 			{
 				ZeroMemory(szTmpFileName, MAX_PATH);
@@ -163,6 +178,7 @@ bool MyMiniZip::packFolderToZip(zipFile ZipFile, const std::string strFileInZipN
 				{
 					sprintf_s(szTmpFileName, "%s/%s", strPath.c_str(), file_dta.cFileName);
 					addFileZip(ZipFile, szTmpFileName, szFullFilePath);
+					std::cout << "Zip Compressed File\t" << szFullFilePath << std::endl;
 				}
 			}
 		}
@@ -183,12 +199,12 @@ bool MyMiniZip::CompressToPackageZip(const std::string strSourceFile, const std:
 	if (dwAttrib == INVALID_FILE_ATTRIBUTES) return bResult;
 	if (NULL != (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
 	{
-		//±íÃ÷ÊÇÒ»¸öÎÄ¼ş¼Ğ
+		//è¡¨æ˜æ˜¯ä¸€ä¸ªæ–‡ä»¶å¤¹
 		bResult = CompressToPackageZip(strSourceFile, strSaveFile, 1);
 	}
 	else
 	{
-		//±íÃ÷ÊÇÒ»¸öÎÄ¼ş
+		//è¡¨æ˜æ˜¯ä¸€ä¸ªæ–‡ä»¶
 		bResult = CompressToPackageZip(strSourceFile, strSaveFile, 0);
 	}
 	TimeEnd = TimeCount.end();
@@ -200,12 +216,15 @@ bool MyMiniZip::CompressToPackageZip(const std::string strSourceFile, const std:
 {
 	bool bResult = false;
 	zipFile zipFileHandle = NULL;
-	//´´½¨Ò»¸özipÑ¹Ëõ°üÎÄ¼ş Ê§°Ü·µ»Ønull
+	//Create a zip archive file. Returns null on failure.
 	zipFileHandle = zipOpen(strSaveFile.c_str(), APPEND_STATUS_CREATE);
 	if (!zipFileHandle) return bResult;
-	if (nMode)
+	if (nMode)//folder
 	{
-		bResult = packFolderToZip(zipFileHandle, strSourceFile, "");
+		std::string filePath = strSourceFile;
+		size_t lastSlash = filePath.find_last_of('\\');
+		std::string lastFolderName = filePath.substr(lastSlash + 1);
+		bResult = packFolderToZip(zipFileHandle, strSourceFile, lastFolderName);
 	}
 	else
 	{
@@ -217,6 +236,114 @@ bool MyMiniZip::CompressToPackageZip(const std::string strSourceFile, const std:
 	}
 	zipClose(zipFileHandle,nullptr);
 	return bResult;
+}
+
+bool DoesFolderExist(const std::string &folderPath)
+{
+	DWORD attributes = GetFileAttributesA(folderPath.c_str());
+	return (attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+std::string GenerateNewPath(const std::string &oldPath)
+{
+	if (!DoesFolderExist(oldPath))
+	{
+		return "";
+	}
+
+	std::string newPath = oldPath;
+	int counter = 1;
+
+	while (DoesFolderExist(newPath))
+	{
+		size_t pos = oldPath.find_last_of("\\");
+		if (pos != std::string::npos)
+		{
+			newPath = oldPath.substr(0, pos + 1) + oldPath.substr(pos + 1) + "(" + std::to_string(counter++) + ")";
+		}
+		else
+		{
+			newPath = oldPath + "(" + std::to_string(counter++) + ")";
+		}
+	}
+
+	return newPath;
+}
+
+std::string GetLastFolderName(const std::string &path)
+{
+	size_t lastSlash = path.find_last_of('\\');
+
+	if (lastSlash != std::string::npos)
+	{
+		return path.substr(lastSlash + 1);
+	}
+
+	return path;
+}
+
+std::string GetFirstFolderName(const std::string &path)
+{
+	std::string folderName;
+	size_t firstSlash = path.find('\\');
+
+	if (firstSlash != std::string::npos)
+	{
+		folderName = path.substr(0, firstSlash);
+	}
+	else
+	{
+		folderName = path;
+	}
+
+	return folderName;
+}
+
+std::string ChangeFirstPathComponent(const std::string &originalPath, const std::string &newComponent)
+{
+	std::istringstream iss(originalPath);
+	std::string component;
+	std::string result;
+
+	if (std::getline(iss, component, '\\'))
+	{
+		result = newComponent + originalPath.substr(component.length());
+	}
+	else
+	{
+		result = newComponent;
+	}
+
+	return result;
+}
+
+std::string RenameUnZipFolder(std::string zipPath, std::string rootPath, std::string &newFolderName, bool &initFolderName)
+{
+	std::string newZipPath;
+	replace(zipPath.begin(), zipPath.end(), '/', '\\');
+	std::string folderName = GetFirstFolderName(zipPath);
+	if(!initFolderName)
+	{
+		initFolderName = true;
+		std::string oldPath = rootPath + folderName;
+		replace(oldPath.begin(), oldPath.end(), '/', '\\');
+		if (DoesFolderExist(oldPath))
+		{
+			// if old path is xxxxx(1) new path is xxxxx(2)
+			// if old path is xxxxx new path is xxxx(1)
+			newFolderName = GetLastFolderName(GenerateNewPath(oldPath));
+		}
+		else
+		{
+			newFolderName = folderName;
+		}
+		newZipPath = ChangeFirstPathComponent(zipPath, newFolderName);
+	}
+	else
+	{
+		newZipPath = ChangeFirstPathComponent(zipPath, newFolderName);
+	}
+	return newZipPath;
 }
 
 DWORD MyMiniZip::unZipPackageToLoacal(const std::string strSourceZipPath, const std::string strDestZipPath)
@@ -235,12 +362,12 @@ DWORD MyMiniZip::unZipPackageToLoacal(const std::string strSourceZipPath, const 
 	unz_global_info global_info;
 	if (UNZ_OK != unzGetGlobalInfo(unZipFileHandle, &global_info))
 	{
-		file_status = "»ñÈ¡È«¾ÖzipĞÅÏ¢Ê§°Ü!";
+		file_status = "Failed to obtain global zip information!";
 		unzClose(unZipFileHandle);
 		unZipFileHandle = NULL;
 		return dwResult;
 	}
-	/*»ñÈ¡zip×¢ÊÍÄÚÈİ*/
+	/*è·å–zipæ³¨é‡Šå†…å®¹*/
 	global_comment = "";
 	if (global_info.size_comment > 0)
 	{
@@ -258,11 +385,13 @@ DWORD MyMiniZip::unZipPackageToLoacal(const std::string strSourceZipPath, const 
 	int zipinfo = unzGoToFirstFile(unZipFileHandle);
 	if (UNZ_OK != zipinfo)
 	{
-		file_status = "ÎŞ·¨»ñÈ¡zip°üÄÚÎÄ¼şĞÅÏ¢zip°ü¿ÉÄÜÊÇnullµÄ!";
+		file_status = "Unable to obtain file information in the zip package. The zip package may be null!";
 		unzClose(unZipFileHandle);
 		unZipFileHandle = NULL;
 		return dwResult;
 	}
+	std::string newFolderName = "";
+	bool initFolderName = false;
 	while (UNZ_OK == zipinfo)
 	{
 		unz_file_info file_info;
@@ -274,7 +403,7 @@ DWORD MyMiniZip::unZipPackageToLoacal(const std::string strSourceZipPath, const 
 		if (strFileName.empty())
 			continue;
 		int length = strFileName.length() - 1;
-
+		strFileName = RenameUnZipFolder(strFileName, rootPath, newFolderName, initFolderName);
 		if (strFileName[length] != '/')
 		{
 			std::string Filepath = rootPath + strFileName;

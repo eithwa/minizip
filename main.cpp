@@ -4,16 +4,16 @@ int main()
 {
 	MyMiniZip unZip;
 	/*
-	@解压缩 zip文件包
+	@秆?? zipゅン
 	*/
-	unZip.unZipPackageToLoacal("D:\\boost_1_67_0.zip", "d:\\pdf\\");
-	printf_s("共计用时 %d 秒\r\n", unZip.GetCountTime());
+	unZip.unZipPackageToLoacal("D:\\test.zip", "d:\\");
+	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());
 
 	/*
-	@ 压缩文件或目录为zip包
+	@ ??ゅン┪ヘ??zip
 	*/
-	unZip.CompressToPackageZip("D:\\PDF\\WPS2016ProPlus_normal.exe", "D:\\PDF\\WPS2016.zip");
-	printf_s("共计用时 %d 秒\r\n", unZip.GetCountTime());
+	unZip.CompressToPackageZip("D:\\11111111", "D:\\test.zip");
+	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());
 	system("pause");
 	return 0;
 }

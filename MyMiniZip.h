@@ -1,10 +1,10 @@
 #ifndef __MYMINIZIP__
 #define __MYMINIZIP__
 /*
-@ ZLIB ÊµÏÖ¼òµ¥µÄzipÎÄ¼şÑ¹Ëõ|½âÑ¹Ëõ¹¦ÄÜ
-@ µ÷ÓÃ ZLIB
+@ ZLIB å®ç°ç®€å•çš„zipæ–‡ä»¶å‹ç¼©|è§£å‹ç¼©åŠŸèƒ½
+@ è°ƒç”¨ ZLIB
 @ http://www.zlib.net/
-@ 2018Äê12ÔÂ17ÈÕ
+@ 2018å¹´12æœˆ17æ—¥
 */
 #include <windows.h>
 #include <string>
@@ -17,7 +17,7 @@ extern "C"
 #include "zip.h"
 }
 /*
-@ »ñÈ¡º¯ÊıÖ´ĞĞºÄÊ±¶àÉÙÃë
+@ è·å–å‡½æ•°æ‰§è¡Œè€—æ—¶å¤šå°‘ç§’
 */
 typedef std::chrono::steady_clock::time_point Time;
 class MyCTime
@@ -33,7 +33,7 @@ private:
 };
 
 /*
-@ ºËĞÄÀà ´¦Àí Ñ¹Ëõ½âÑ¹Ëõ 
+@ æ ¸å¿ƒç±» å¤„ç† å‹ç¼©è§£å‹ç¼© 
 */
 class MyMiniZip
 {
@@ -42,67 +42,67 @@ public:
 	~MyMiniZip();
 public:
 	/*
-	@ »ñÈ¡unZipPackageToLoacal º¯Êı½âÑ¹¹²¼ÆÓÃÊ±
+	@ è·å–unZipPackageToLoacal å‡½æ•°è§£å‹å…±è®¡ç”¨æ—¶
 	*/
 	int GetCountTime() const;
 	/*
-	@ »ñÈ¡µ±Ç°½âÑ¹ÎÄ¼ş»òÕßÑ¹ËõÎÄ¼şµÄ×´Ì¬ĞÅÏ¢
+	@ è·å–å½“å‰è§£å‹æ–‡ä»¶æˆ–è€…å‹ç¼©æ–‡ä»¶çš„çŠ¶æ€ä¿¡æ¯
 	*/
 	std::string GetFileStatus() const;
 	/*
-	@ »ñÈ¡Ñ¹Ëõ°üÄÚÈ«¾Ö×¢ÊÍÎÄ±¾
+	@ è·å–å‹ç¼©åŒ…å†…å…¨å±€æ³¨é‡Šæ–‡æœ¬
 	*/
 	std::string GetGlobalComment() const;
 	/*
-	@ Ñ¹ËõÎÄ¼ş »òÕßÎÄ¼ş¼Ğ ÄÚ²¿×Ô¶¯ÅĞ¶Ï
-	@ strSourceFile Òª±»Ñ¹ËõµÄÎÄ¼ş»òÎÄ¼şÂ·¾¶È«³Æ
-	@ strSaveFile ÒªÉú³ÉµÄzipÑ¹Ëõ°üÃûÈ«Â·¾¶
-	@ Ê§°Ü·µ»Ø false ³É¹¦·µ»Ø true
+	@ å‹ç¼©æ–‡ä»¶ æˆ–è€…æ–‡ä»¶å¤¹ å†…éƒ¨è‡ªåŠ¨åˆ¤æ–­
+	@ strSourceFile è¦è¢«å‹ç¼©çš„æ–‡ä»¶æˆ–æ–‡ä»¶è·¯å¾„å…¨ç§°
+	@ strSaveFile è¦ç”Ÿæˆçš„zipå‹ç¼©åŒ…åå…¨è·¯å¾„
+	@ å¤±è´¥è¿”å› false æˆåŠŸè¿”å› true
 	*/
 	bool CompressToPackageZip(const std::string strSourceFile, const std::string strSaveFile);
 	/*
-	@ ½âÑ¹zip °üÎÄ¼şµ½Ö¸¶¨Â·¾¶
-	@ strSourceZipPath Òª±»½âÑ¹µÄzipÎÄ¼ş°üÈ«Â·¾¶
-	@ strDestZipPath ½«Òª½âÑ¹µ½µÄ±¾µØÂ·¾¶
-	@ ³É¹¦·µ»Ø ½âÑ¹ÎÄ¼şµÄÊıÁ¿ Ê§°Ü·µ»Ø null
+	@ è§£å‹zip åŒ…æ–‡ä»¶åˆ°æŒ‡å®šè·¯å¾„
+	@ strSourceZipPath è¦è¢«è§£å‹çš„zipæ–‡ä»¶åŒ…å…¨è·¯å¾„
+	@ strDestZipPath å°†è¦è§£å‹åˆ°çš„æœ¬åœ°è·¯å¾„
+	@ æˆåŠŸè¿”å› è§£å‹æ–‡ä»¶çš„æ•°é‡ å¤±è´¥è¿”å› null
 	*/
 	DWORD unZipPackageToLoacal(const std::string strSourceZipPath, const std::string strDestZipPath);
 private:
 	/*
-	@ ½«ÎÄ¼ş»òÕßÎÄ¼ş¼ĞÌí¼Óµ½zipÑ¹Ëõ°üÖĞ
-	@ ZipFile zipFile ¾ä±ú
-	@ strFileInZipName ÎÄ¼ş»òÕßÎÄ¼ş¼ĞÃû³Æ
-	@ strPath Èç¹û strPath Îªnull±íÊ¾ ÊÇÎÄ¼ş¼Ğ ·ñÔòÊÇÎÄ¼ş
+	@ å°†æ–‡ä»¶æˆ–è€…æ–‡ä»¶å¤¹æ·»åŠ åˆ°zipå‹ç¼©åŒ…ä¸­
+	@ ZipFile zipFile å¥æŸ„
+	@ strFileInZipName æ–‡ä»¶æˆ–è€…æ–‡ä»¶å¤¹åç§°
+	@ strPath å¦‚æœ strPath ä¸ºnullè¡¨ç¤º æ˜¯æ–‡ä»¶å¤¹ å¦åˆ™æ˜¯æ–‡ä»¶
 	*/
 	bool addFileZip(zipFile ZipFile, const std::string strFileInZipName, const std::string strPath);
 	/*
-	 @ µİ¹éÊ½±éÀúÎÄ¼ş¼ĞÏÂËùÓĞÎÄ¼ş²¢Ìí¼Óµ½zipÑ¹Ëõ°ü
-	 @ ZipFile zipFile ¾ä±ú
-	 @ strFileInZipName ÎÄ¼ş»òÕßÎÄ¼ş¼ĞÃû³Æ
-	 @ strPath Èç¹û strPath Îªnull±íÊ¾ ÊÇÎÄ¼ş¼Ğ ·ñÔòÊÇÎÄ¼ş
+	 @ é€’å½’å¼éå†æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰æ–‡ä»¶å¹¶æ·»åŠ åˆ°zipå‹ç¼©åŒ…
+	 @ ZipFile zipFile å¥æŸ„
+	 @ strFileInZipName æ–‡ä»¶æˆ–è€…æ–‡ä»¶å¤¹åç§°
+	 @ strPath å¦‚æœ strPath ä¸ºnullè¡¨ç¤º æ˜¯æ–‡ä»¶å¤¹ å¦åˆ™æ˜¯æ–‡ä»¶
 	*/
 	bool  packFolderToZip(zipFile ZipFile, const std::string strFileInZipName, const std::string strPath);
 	/*
-	@ Ñ¹ËõÎÄ¼ş »òÕßÎÄ¼ş¼Ğ ÄÚ²¿×Ô¶¯ÅĞ¶Ï
-	@ strSourceFile Òª±»Ñ¹ËõµÄÎÄ¼ş»òÎÄ¼şÂ·¾¶È«³Æ
-	@ strSaveFile ÒªÉú³ÉµÄzipÑ¹Ëõ°üÃûÈ«Â·¾¶
-	@ nMode ±íÊ¾Ñ¹ËõÎÄ¼ş»¹ÊÇÎÄ¼ş¼Ğ 0 ÊÇÎÄ¼ş 1 ÊÇÎÄ¼ş¼Ğ
-	@ Ê§°Ü·µ»Ø false ³É¹¦·µ»Ø true
+	@ å‹ç¼©æ–‡ä»¶ æˆ–è€…æ–‡ä»¶å¤¹ å†…éƒ¨è‡ªåŠ¨åˆ¤æ–­
+	@ strSourceFile è¦è¢«å‹ç¼©çš„æ–‡ä»¶æˆ–æ–‡ä»¶è·¯å¾„å…¨ç§°
+	@ strSaveFile è¦ç”Ÿæˆçš„zipå‹ç¼©åŒ…åå…¨è·¯å¾„
+	@ nMode è¡¨ç¤ºå‹ç¼©æ–‡ä»¶è¿˜æ˜¯æ–‡ä»¶å¤¹ 0 æ˜¯æ–‡ä»¶ 1 æ˜¯æ–‡ä»¶å¤¹
+	@ å¤±è´¥è¿”å› false æˆåŠŸè¿”å› true
 	*/
 	bool CompressToPackageZip(const std::string strSourceFile, const std::string strSaveFile,int nMode);
 	/*
-	@ ´ÓÖ¸¶¨Â·¾¶¶ÁÈ¡¶ş½øÖÆÎÄ¼ş
-	@ szFileName Òª¶ÁÈ¡µÄÎÄ¼şÈ«Â·¾¶
-	@ pFileBuffer ÓÃÀ´½ÓÊÕ¶ÁÈ¡ÎÄ¼şµÄÄÚ´æbuffer
-	@ ·µ»Ø¶ÁÈ¡µ½ÎÄ¼şµÄ×Ö½Ú´óĞ¡ Ê§°Ü·µ»Ønull
+	@ ä»æŒ‡å®šè·¯å¾„è¯»å–äºŒè¿›åˆ¶æ–‡ä»¶
+	@ szFileName è¦è¯»å–çš„æ–‡ä»¶å…¨è·¯å¾„
+	@ pFileBuffer ç”¨æ¥æ¥æ”¶è¯»å–æ–‡ä»¶çš„å†…å­˜buffer
+	@ è¿”å›è¯»å–åˆ°æ–‡ä»¶çš„å­—èŠ‚å¤§å° å¤±è´¥è¿”å›null
 	*/
 	DWORD ReadFileBuffer(std::string szFileName, PVOID* pFileBuffer);
 	/*
-	@ ´ÓÄÚ´æÖĞĞ´ÎÄ¼şÊı¾İµ½±¾µØ
-	@ szFileNmae Ğ´³öÎÄ¼şµÄÈ«Â·¾¶
-	@ pFileBuffer Ğ´³öÎÄ¼şµÄÊı¾İÖ¸Õë
-	@ dwFileSize ÓûĞ´³öÎÄ¼şµÄ´óĞ¡³¤¶È
-	@ Ê§°Ü·µ»Ø -1 ³É¹¦ ·µ»ØÊµ¼ÊĞ´³öÎÄ¼ş´óĞ¡
+	@ ä»å†…å­˜ä¸­å†™æ–‡ä»¶æ•°æ®åˆ°æœ¬åœ°
+	@ szFileNmae å†™å‡ºæ–‡ä»¶çš„å…¨è·¯å¾„
+	@ pFileBuffer å†™å‡ºæ–‡ä»¶çš„æ•°æ®æŒ‡é’ˆ
+	@ dwFileSize æ¬²å†™å‡ºæ–‡ä»¶çš„å¤§å°é•¿åº¦
+	@ å¤±è´¥è¿”å› -1 æˆåŠŸ è¿”å›å®é™…å†™å‡ºæ–‡ä»¶å¤§å°
 	*/
 	DWORD WriteFileBuffer(std::string szFileNmae, PVOID pFileBuffer, DWORD dwFileSize);
 private:
@@ -110,15 +110,15 @@ private:
 	Time TimeEnd;
 	int nCountTime;
 	/*
-	@ µ±Ç°²Ù×÷½âÑ¹ÎÄ¼ş×´Ì¬
+	@ å½“å‰æ“ä½œè§£å‹æ–‡ä»¶çŠ¶æ€
 	*/
 	std::string file_status;
 	/*
-	@ Ñ¹Ëõ°üÄÚÈ«¾Ö×¢ÊÍÎÄ±¾
+	@ å‹ç¼©åŒ…å†…å…¨å±€æ³¨é‡Šæ–‡æœ¬
 	*/
 	std::string global_comment;
 	/*
-	@ ½âÑ¹ZIP°üµÄ ¾ä±ú
+	@ è§£å‹ZIPåŒ…çš„ å¥æŸ„
 	*/
 	unzFile unZipFileHandle;
 };
