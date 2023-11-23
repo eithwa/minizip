@@ -243,7 +243,7 @@ bool CheckFile(PARA_INFO &para)
 				// Check if the file extension is ".sm"
 				if (entry.path().extension() == ".sm")
 				{
-					std::cout <<std::endl<< "Found .sm file: " << entry.path() << std::endl;
+					//std::cout <<std::endl<< "Found .sm file: " << entry.path() << std::endl;
 
 					// Process the .sm file
 					std::wstring regexInfo = FindRegex(entry.path().wstring(), regex);
@@ -258,7 +258,7 @@ bool CheckFile(PARA_INFO &para)
 						try
 						{
 							fs::rename(entry.path(), newFilePath);
-							std::wcout << L"File renamed to: " << newFilePath << std::endl;
+							//std::wcout << L"File renamed to: " << newFilePath << std::endl;
 						}
 						catch (const std::filesystem::filesystem_error& ex)
 						{
@@ -280,7 +280,10 @@ bool CheckFile(PARA_INFO &para)
 	if(!IsEnglishOrSymbol(para.songPath.filename().wstring()))
 	{
 		//translate
+		std::regex pattern("[^a-zA-Z0-9]");
+		fs::path tempName = para.songPath.filename();
 		std::string newFolderName = Transliterate(para.songPath.filename().wstring());
+		newFolderName = std::regex_replace(newFolderName, pattern, "");
 		if(!newFolderName.empty())
 		{
 			// std::cout << "newFolderName " << newFolderName << std::endl;
@@ -346,11 +349,11 @@ void FilterFile(const PARA_INFO para)
 		{
 			// Remove the folder and its contents
 			fs::remove_all(backupFolderPath);
-			std::wcout << L"Removed folder: " << backupFolderPath << std::endl;
+			//std::wcout << L"Removed folder: " << backupFolderPath << std::endl;
 		}
 		else
 		{
-			std::wcout << L"Folder does not exist: " << backupFolderPath << std::endl;
+			//std::wcout << L"Folder does not exist: " << backupFolderPath << std::endl;
 		}
 		if (para.filter)
 		{
@@ -376,7 +379,7 @@ bool CompressSongDir(PARA_INFO& para)
 	bool result = true;
 	// 1. Create a connection folder
 	// Connection directory path
-	boost::filesystem::wpath connectDirPath = boost::filesystem::current_path().parent_path() / "Songs" / "connect" / "temp";
+	boost::filesystem::wpath connectDirPath = boost::filesystem::current_path() / "Songs" / "connect" / "temp";
 	// Create a directory
 	DeleteFolder(connectDirPath.wstring());
 	boost::filesystem::create_directories(connectDirPath);
@@ -408,7 +411,7 @@ bool CompressSongDir(PARA_INFO& para)
 void DecompressSongFolder(void)
 {
 	MyMiniZip unZip;
-	boost::filesystem::wpath connectDirPath = boost::filesystem::current_path().parent_path() / "Songs" / "connect";
+	boost::filesystem::wpath connectDirPath = boost::filesystem::current_path() / "Songs" / "connect";
 	boost::filesystem::wpath zipPath = connectDirPath / "temp.zip";
 	unZip.unZipPackageToLoacal(zipPath.string(), connectDirPath.string());
 	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());

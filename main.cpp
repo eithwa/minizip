@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 	PARA_INFO para = {COMPRESS, false, ""};
 	for (int i = 0; i < argc; i++)
 	{
-		printf("[%d] %s\n", i, argv[i]);
+		// printf("[%d] %s\n", i, argv[i]);
 		switch (i)
 		{
 		case PARA_MODE:
@@ -15,7 +15,15 @@ int main(int argc, char *argv[])
 			para.filter = std::atoi(argv[i]) != 0;
 			break;
 		case PARA_PATH:
-			para.songPath = argv[i];
+			// Check if the argument is enclosed in quotes and remove them
+			if (argv[i][0] == '"' && argv[i][strlen(argv[i]) - 1] == '"')
+			{
+				para.songPath = std::string(argv[i] + 1, strlen(argv[i]) - 2);
+			}
+			else
+			{
+				para.songPath = argv[i];
+			}
 			break;
 		}
 	}
