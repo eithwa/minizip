@@ -1,19 +1,36 @@
-#include <iostream>
-#include "MyMiniZip.h"
-int main()
-{
-	MyMiniZip unZip;
-	/*
-	@¸Ñ?? zip¤å¥ó¥]
-	*/
-	unZip.unZipPackageToLoacal("D:\\test.zip", "d:\\");
-	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());
+ï»¿#include "fileManager.h"
 
-	/*
-	@ ??¤å¥ó©Î¥Ø??zip¥]
-	*/
-	unZip.CompressToPackageZip("D:\\11111111", "D:\\test.zip");
-	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());
+int main(int argc, char *argv[])
+{
+	PARA_INFO para = {COMPRESS, false, ""};
+	for (int i = 0; i < argc; i++)
+	{
+		printf("[%d] %s\n", i, argv[i]);
+		switch (i)
+		{
+		case PARA_MODE:
+			para.mode = (COMPRESS_MODE)std::atoi(argv[i]);
+			break;
+		case PARA_FILTER:
+			para.filter = std::atoi(argv[i]) != 0;
+			break;
+		case PARA_PATH:
+			para.songPath = argv[i];
+			break;
+		}
+	}
+
+	switch (para.mode)
+	{
+	case COMPRESS:
+		CompressSongDir(para);
+		break;
+	case DECOMPRESS:
+		DecompressSongFolder();
+		break;
+	default:
+		break;
+	}
 	system("pause");
 	return 0;
 }

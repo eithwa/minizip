@@ -4,6 +4,7 @@
 #include <dbghelp.h>
 #include <shlwapi.h>
 #include <iostream>
+#include <sstream>
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"dbghelp.lib")
 #if _DEBUG 

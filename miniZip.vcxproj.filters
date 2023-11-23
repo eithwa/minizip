@@ -45,6 +45,9 @@
     <ClInclude Include="MyMiniZip.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="fileManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ioapi.c">
@@ -66,6 +69,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyMiniZip.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fileManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
