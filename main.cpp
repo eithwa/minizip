@@ -29,8 +29,7 @@ int main(int argc, char *argv[])
 	}
 	// para.mode = COMPRESS;
 	// para.filter = true;
-	// para.songPath = "D:\\StepMania做譜\\Songs\\7mai\\Blindness";
-
+	// para.songPath = L"D:\\StepMania做譜\\Songs\\7mai\\二息歩行";
 	switch (para.mode)
 	{
 	case COMPRESS:
