@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
+	// para.mode = COMPRESS;
+	// para.filter = true;
+	// para.songPath = "D:\\StepMania做譜\\Songs\\7mai\\Blindness";
 
 	switch (para.mode)
 	{
@@ -39,5 +42,6 @@ int main(int argc, char *argv[])
 	default:
 		break;
 	}
+	// system("pause");
 	return 0;
 }

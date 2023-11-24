@@ -124,13 +124,13 @@ std::string Transliterate(const std::wstring &source)
 // Function to check if a string contains only English letters, digits, or symbols
 bool IsEnglishOrSymbol(const std::wstring &str)
 {
-	// Regular expression: ^[A-Za-z0-9[:punct:]]*$
+	// Regular expression: ^[A-Za-z0-9 _\-\[\]\{\}\(\)]*$
 	// ^ start
-	// [A-Za-z0-9] matches uppercase letters, lowercase letters and numbers
-	// [:punct:] matches punctuation characters
+	// [A-Za-z0-9] matches uppercase letters, lowercase letters, and numbers
+	// _\-[\]\{\}\(\) matches underscore, hyphen, square brackets, curly braces, and parentheses
 	// * Zero or more matches
 	// $ end
-	std::wregex regex(L"^[A-Za-z0-9[:punct:]]*$");
+	std::wregex regex(L"^[A-Za-z0-9 _.\\-\\[\\]\\{\\}\\(\\)]*$");
 
 	return std::regex_match(str, regex);
 }
@@ -280,26 +280,24 @@ bool CheckFile(PARA_INFO &para)
 	if(!IsEnglishOrSymbol(para.songPath.filename().wstring()))
 	{
 		//translate
-		std::regex pattern("[^a-zA-Z0-9]");
-		fs::path tempName = para.songPath.filename();
+		std::regex pattern("[^A-Za-z0-9 _.\\-\\[\\]\\{\\}\\(\\)]");
 		std::string newFolderName = Transliterate(para.songPath.filename().wstring());
 		newFolderName = std::regex_replace(newFolderName, pattern, "");
-		if(!newFolderName.empty())
+		if(newFolderName.empty())
 		{
-			// std::cout << "newFolderName " << newFolderName << std::endl;
-			//todo rename the folder, path.songPath type is boost::filesystem::wpath
-			boost::filesystem::wpath newFolderPath = para.tempPath;
-			newFolderPath.remove_filename();
-			newFolderPath /= newFolderName;
-			// std::cout << "newFolderPath " << newFolderPath.string() << std::endl;
-			boost::filesystem::rename(folderPath, newFolderPath);
-			para.tempPath = newFolderPath;
-			// std::wcout << L"Folder renamed: " << folderPath << L" -> " << newFolderPath << std::endl;
+			auto currentTimePoint = std::chrono::system_clock::now();
+			std::time_t currentTime = std::chrono::system_clock::to_time_t(currentTimePoint);
+			newFolderName = std::ctime(&currentTime);
 		}
-		else
-		{
-			return false;
-		}
+		std::cout << "newFolderName " << newFolderName << std::endl;
+		//todo rename the folder, path.songPath type is boost::filesystem::wpath
+		boost::filesystem::wpath newFolderPath = para.tempPath;
+		newFolderPath.remove_filename();
+		newFolderPath /= newFolderName;
+		std::cout << "newFolderPath " << newFolderPath.string() << std::endl;
+		boost::filesystem::rename(folderPath, newFolderPath);
+		para.tempPath = newFolderPath;
+		std::wcout << L"Folder renamed: " << folderPath << L" -> " << newFolderPath << std::endl;
 	}
 	return true;
 }
@@ -383,7 +381,7 @@ bool CompressSongDir(PARA_INFO& para)
 	// Create a directory
 	DeleteFolder(connectDirPath.wstring());
 	boost::filesystem::create_directories(connectDirPath);
-	
+
 	// 2. Put the song folder into the temporary folder
 	result = CopyFolder(para, connectDirPath);
 	if (!result) return result;
