@@ -64,19 +64,19 @@ bool CopyFolder(PARA_INFO& para, const fs::wpath& destinationPath)
 	return result;
 }
 
-bool DeleteFolder(const std::wstring &folderPath)
+bool DeleteFolder(boost::filesystem::wpath &path)
 {
 	bool result = true;
 	try
 	{
-		// Delete a folder and its contents
-		std::filesystem::remove_all(folderPath);
+		boost::filesystem::remove_all(path);
 
-		// std::cout << "The folder was successfully deleted.\n";
+		// std::cout << "Folder deleted successfully." << std::endl;
+		result = true;
 	}
-	catch (const std::exception &e)
+	catch (const boost::filesystem::filesystem_error &ex)
 	{
-		std::cerr << "An error occurred while deleting the folder: " << e.what() << '\n';
+		std::cerr << "Error deleting folder: " << ex.what() << std::endl;
 		result = false;
 	}
 	return result;
@@ -379,7 +379,9 @@ bool CompressSongDir(PARA_INFO& para)
 	// Connection directory path
 	boost::filesystem::wpath connectDirPath = boost::filesystem::current_path() / "Songs" / "connect" / "temp";
 	// Create a directory
-	DeleteFolder(connectDirPath.wstring());
+	DeleteFolder(connectDirPath);
+
+	//printf("path %s\n",connectDirPath.c_str());
 	boost::filesystem::create_directories(connectDirPath);
 
 	// 2. Put the song folder into the temporary folder
@@ -400,7 +402,7 @@ bool CompressSongDir(PARA_INFO& para)
 	boost::filesystem::wpath outputFile = connectDirPath.parent_path() / "temp.zip";
 	unZip.CompressToPackageZip(para.tempPath.string(), outputFile.string());
 	printf_s("Total time taken %d seconds\r\n", unZip.GetCountTime());
-	DeleteFolder(connectDirPath.wstring());
+	DeleteFolder(connectDirPath);
 
 	printf("CompressSongDir result: %d\n", result);
 	return result;

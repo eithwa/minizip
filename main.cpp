@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 	// para.mode = COMPRESS;
 	// para.filter = true;
 	// para.songPath = L"D:\\StepMania做譜\\Songs\\7mai\\二息歩行";
+	printf("songPath: %s\n", para.songPath.c_str());
 	switch (para.mode)
 	{
 	case COMPRESS:
